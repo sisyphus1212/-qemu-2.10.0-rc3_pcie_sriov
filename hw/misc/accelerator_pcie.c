@@ -16,7 +16,8 @@
 #include "qapi/visitor.h"
 #include "net/net.h"
 #include "acc/acc.h"
-
+#include "zframe.h"
+#include "zsock.h"
 
 #define ACCELERATOR_EPRINTF(fmt, ...)                                          \
     do {                                                                       \
@@ -260,7 +261,7 @@ static void net_tx_packet(void *opaque) {
         // ACCELERATOR_DPRINTF("in %s:%d\n", __func__, __LINE__);
         zframe_t *frame = zframe_recv(s->nic_resp);
         assert(frame);
-        ACCNICData *acc_data = (ACCNICData *)zframe_data(frame);        
+        ACCNICData *acc_data = (ACCNICData *)zframe_data(frame);
         ACCELERATOR_DPRINTF("NIC: Sending packet to world\n");
         qemu_send_packet(qemu_get_queue(s->nic), acc_data->data, acc_data->size);
         zframe_destroy(&frame);
@@ -298,7 +299,7 @@ static void acc_pcie_realize(PCIDevice *dev, Error **errp) {
 
     ACCPCIeState *s = ACC_PCIE(dev);
     DeviceState *d = DEVICE(dev);
-    
+
     uint8_t *pci_conf;
     pci_conf = dev->config;
     pci_conf[PCI_COMMAND] = PCI_COMMAND_IO | PCI_COMMAND_MEMORY;
@@ -326,8 +327,8 @@ static void acc_pcie_realize(PCIDevice *dev, Error **errp) {
     // request from hdl
     memset(buffer, 0, 50);
     sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 2);
-    s->hdl_req = zsock_new_pull(buffer);
-    // qemu response to request
+    s->hdl_req = zsocko_new_pull(buffer);
+    // qemu response t request
     memset(buffer, 0, 50);
     sprintf(buffer, SOCK_BASE, SEND_SOCK, port + 3);
     s->hdl_resp = zsock_new_push(buffer);
@@ -359,7 +360,7 @@ static void acc_pcie_realize(PCIDevice *dev, Error **errp) {
     s->nic = qemu_new_nic(&net_acc_info, &s->conf,
                           object_get_typename(OBJECT(dev)), d->id, s);
     qemu_format_nic_info_str(qemu_get_queue(s->nic), s->conf.macaddr.a);
-    
+
     // MSI init
     msi_init(dev, 0x00, NUM_MSI_VEC, false, false, errp);
 }
@@ -379,7 +380,7 @@ static void acc_pcie_reset(DeviceState *ds) { /*TODO*/
 }
 
 static Property acc_pcie_properties[] = {
-    DEFINE_NIC_PROPERTIES(ACCPCIeState, conf), 
+    DEFINE_NIC_PROPERTIES(ACCPCIeState, conf),
     DEFINE_PROP_END_OF_LIST(),
 };
 

@@ -37,6 +37,8 @@
 #include "sysemu/replay.h"
 
 #include "acc/acc.h"
+#include "zframe.h"
+#include "zpoller.h"
 
 /* -icount align implementation. */
 
@@ -151,7 +153,7 @@ uintptr_t wrapper_tcg_qemu_tb_exec(void *env, void *tb_ptr) {
     if (hdl_lockstep) {
         hdl_step_count -= 1;
         while (hdl_step_count <= 0) {
-            if (ls_sock == NULL) { 
+            if (ls_sock == NULL) {
                 int port = atoi(getenv("COSIM_PORT"));
                 char buffer[50];
                 sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 6);

@@ -17,7 +17,7 @@ RUN apt-get install -y libglib2.0-dev
 RUN apt-get install -y libfdt-dev
 RUN apt-get install -y libpixman-1-dev
 RUN apt-get install -y zlib1g-dev
-RUN apt-get install -y python
+RUN apt-get install -y python sudo
 RUN apt-get install -y git iproute2  net-tools
 RUN apt-get install -y pkg-config
 RUN apt-get install -y libzmq3-dev libczmq-dev libncurses5-dev libncursesw5-dev libsdl2-dev

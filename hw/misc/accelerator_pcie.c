@@ -327,7 +327,7 @@ static void acc_pcie_realize(PCIDevice *dev, Error **errp) {
     // request from hdl
     memset(buffer, 0, 50);
     sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 2);
-    s->hdl_req = zsocko_new_pull(buffer);
+    s->hdl_req = zsock_new_pull(buffer);
     // qemu response t request
     memset(buffer, 0, 50);
     sprintf(buffer, SOCK_BASE, SEND_SOCK, port + 3);

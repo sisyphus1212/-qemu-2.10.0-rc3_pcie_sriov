@@ -36,6 +36,8 @@
 #include "sysemu/cpus.h"
 #include "sysemu/replay.h"
 
+#include "acc/acc.h"
+
 /* -icount align implementation. */
 
 typedef struct SyncClocks {
@@ -134,6 +136,38 @@ static void init_delay_params(SyncClocks *sc, const CPUState *cpu)
 {
 }
 #endif /* CONFIG USER ONLY */
+
+//Instantiate HDL extern variables
+zsock_t *ls_sock;
+int hdl_lockstep = 1;
+int hdl_step_size = ICOUNT_STEP;
+int catchup_steps = 0;
+int64_t hdl_step_count = 100000000000L; /* initial buffer for boot */
+const int RCVHWM_VALUE = 1;
+
+uintptr_t wrapper_tcg_qemu_tb_exec(void *env, void *tb_ptr) {
+
+    //VM-HDL lock-step
+    if (hdl_lockstep) {
+        hdl_step_count -= 1;
+        while (hdl_step_count <= 0) {
+            if (ls_sock == NULL) { 
+                int port = atoi(getenv("COSIM_PORT"));
+                char buffer[50];
+                sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 6);
+                ls_sock = zsock_new_pull(buffer);
+                zsock_set_rcvhwm(ls_sock, RCVHWM_VALUE);
+            }
+            zframe_t* frame = zframe_recv(ls_sock);
+            assert(frame);
+            zframe_destroy(&frame);
+            do {
+                hdl_step_count += hdl_step_size;
+            } while (catchup_steps-- > 0);
+        }
+    }
+    return ((uintptr_t (*)(void *, void *))tcg_ctx.code_gen_prologue)(env, tb_ptr);
+}
 
 /* Execute a TB, and fix up the CPU state afterwards if necessary */
 static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)

@@ -49,6 +49,8 @@
 #include <spice/enums.h>
 #endif
 
+#include "acc/acc.h"
+
 static void hmp_handle_error(Monitor *mon, Error **errp)
 {
     assert(errp);
@@ -1042,6 +1044,26 @@ void hmp_quit(Monitor *mon, const QDict *qdict)
 void hmp_stop(Monitor *mon, const QDict *qdict)
 {
     qmp_stop(NULL);
+}
+
+void hmp_hdl_lockstep(Monitor *mon, const QDict *qdict)
+{
+    const char *option = qdict_get_try_str(qdict, "option");
+    if (!option || !strcmp(option, "on")) {
+        hdl_lockstep = 1;
+        hdl_step_count = 0;
+    } else if (!strcmp(option, "off")) {
+        hdl_lockstep = 0;
+    } else {
+        monitor_printf(mon, "unexpected option %s\n", option);
+    }
+}
+
+void hmp_hdl_stepsize(Monitor *mon, const QDict *qdict)
+{
+    monitor_printf(mon,"old step_size %d\n", hdl_step_size); 
+    hdl_step_size = qdict_get_try_int(qdict, "step", 8);
+    monitor_printf(mon,"new step_size %d\n", hdl_step_size); 
 }
 
 void hmp_system_reset(Monitor *mon, const QDict *qdict)

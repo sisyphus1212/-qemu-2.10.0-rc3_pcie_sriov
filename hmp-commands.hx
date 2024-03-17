@@ -193,6 +193,35 @@ actions (drive options rerror, werror).
 ETEXI
 
     {
+        .name       = "hdl_lockstep",
+        .args_type  = "option:s?",
+        .params     = "[on|off]",
+        .help       = "toggle lockstep with HDL in emulation",
+        .cmd        = hmp_hdl_lockstep,
+    },
+
+STEXI
+@item hdl_lockstep [off]
+@findex hdl_lockstep
+Run the emulation in lock step mode with HDL simulation.
+If called with option off, the emulation returns to normal mode.
+ETEXI
+
+    {
+        .name       = "hdl_stepsize",
+        .args_type  = "step:i",
+        .params     = "step",
+        .help       = "adjust number of cycles qemu can step relative to hdl",
+        .cmd        = hmp_hdl_stepsize,
+    },
+
+STEXI
+@item hdl_stepsize @var{count}
+@findex hdl_stepsize
+Adjust the number of cycles qemu can step relative to hdl.
+ETEXI
+
+    {
         .name       = "change",
         .args_type  = "device:B,target:F,arg:s?,read-only-mode:s?",
         .params     = "device filename [format [read-only-mode]]",

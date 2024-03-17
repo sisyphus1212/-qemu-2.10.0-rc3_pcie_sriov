@@ -31,6 +31,7 @@
 #include "trace-tcg.h"
 #include "exec/log.h"
 
+#include "acc/acc.h"
 
 #define PREFIX_REPZ   0x01
 #define PREFIX_REPNZ  0x02
@@ -8527,7 +8528,7 @@ void gen_intermediate_code(CPUState *cs, TranslationBlock *tb)
             gen_eob(dc);
             break;
         }
-        if (singlestep) {
+        if (singlestep || hdl_lockstep) {
             gen_jmp_im(pc_ptr - dc->cs_base);
             gen_eob(dc);
             break;

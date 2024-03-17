@@ -1,4 +1,5 @@
 # docker run -itd --name qemu_2.7 --hostname docker --privileged -v /home/lcj/qemu-hdl-cosim/qemu/qemu-2.10.0-rc3:/root/qemu  -w /root f9a80a55f492
+#  (sudo -E  qemu-system-x86_64 -hda ./test.raw  -enable-kvm -m 1G   -smp cores=1 -device accelerator-pcie -redir tcp:2200::22  -serial mon:stdio -display none)
 # 使用 Ubuntu 18.04 基础镜像
 FROM ubuntu:18.04
 

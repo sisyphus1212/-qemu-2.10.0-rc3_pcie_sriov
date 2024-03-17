@@ -5,6 +5,9 @@ FROM ubuntu:18.04
 # 设置非交互式安装，避免在安装过程中出现提示
 ARG DEBIAN_FRONTEND=noninteractive
 
+# 设置环境变量
+ENV http_proxy=http://192.168.133.1:10809 \
+    https_proxy=http://192.168.133.1:10809
 # 更新软件包列表并安装编译 QEMU 所需的包
 RUN apt-get update
 RUN apt-get install -y gcc
@@ -20,7 +23,7 @@ RUN apt-get install -y pkg-config
 RUN apt-get install -y libzmq3-dev libczmq-dev libncurses5-dev libncursesw5-dev libsdl2-dev
 
 # 清理缓存，减小镜像大小
-RUN apt-get  clean \
+RUN apt-get  clean && \
     rm -rf /var/lib/apt/lists/*
 
 # 设置工作目录

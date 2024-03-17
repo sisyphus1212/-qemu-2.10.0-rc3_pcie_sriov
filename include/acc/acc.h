@@ -53,14 +53,14 @@ Provided as an alternative to TCP port sockets
 #define SEND_SOCK "@"
 #define RECV_SOCK ">"
 
-#define QEMU_TO_HDL_REQ "tcp://127.0.0.1:21100"
-#define QEMU_TO_HDL_REP "tcp://127.0.0.1:21101"
-#define HDL_TO_QEMU_REQ "tcp://127.0.0.1:21102"
-#define HDL_TO_QEMU_REP "tcp://127.0.0.1:21103"
-#define NIC_REQ         "tcp://127.0.0.1:21104"
-#define NIC_REP         "tcp://127.0.0.1:21105"
-#define ICOUNT_SOCK     "tcp://127.0.0.1:21106"
-#define ICOUNT_SOCK2    "tcp://127.0.0.1:21107"
+#define QEMU_TO_HDL_REQ "tcp://0.0.0.0:21100"
+#define QEMU_TO_HDL_REP "tcp://0.0.0.0:21101"
+#define HDL_TO_QEMU_REQ "tcp://0.0.0.0:21102"
+#define HDL_TO_QEMU_REP "tcp://0.0.0.0:21103"
+#define NIC_REQ         "tcp://0.0.0.0:21104"
+#define NIC_REP         "tcp://0.0.0.0:21105"
+#define ICOUNT_SOCK     "tcp://0.0.0.0:21106"
+#define ICOUNT_SOCK2    "tcp://0.0.0.0:21107"
 
 /* Sorting platform */
 
